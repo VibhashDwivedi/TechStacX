@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { ProgressBar } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const UploadPage = () => {
@@ -50,12 +51,12 @@ const UploadPage = () => {
 
   const handleUpload = async () => {
     if (!file) {
-      alert('Please select a file to upload.');
+      Swal.fire('Error', 'Please select a file to upload.', 'error');
       return;
     }
 
     if (!selectedWorkflowId) {
-      alert('Please select a workflow ID.');
+      Swal.fire('Error', 'Please select a workflow ID.', 'error');
       return;
     }
 
@@ -92,16 +93,16 @@ const UploadPage = () => {
           console.log('Server response:', result);
 
           if (response.ok) {
-            alert(result.message);
+            Swal.fire('Success', result.message, 'success');
           } else {
-            alert(result.error);
+            Swal.fire('Error', result.error, 'error');
           }
         } catch (error) {
           console.error('Error uploading data:', error);
-          alert('Error uploading data.');
+          Swal.fire('Error', 'Error uploading data.', 'error');
         }
       } else {
-        alert('Workflow not found or invalid.');
+        Swal.fire('Error', 'Workflow not found or invalid.', 'error');
       }
     };
     reader.readAsText(file);

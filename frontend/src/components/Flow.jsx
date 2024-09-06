@@ -11,6 +11,7 @@ import {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { v4 as uuidv4 } from 'uuid';
+import Swal from 'sweetalert2';
 import Sidebar from './Sidebar'; // Adjust the import path as necessary
 import '../index.css';
 
@@ -82,12 +83,37 @@ const Flow = () => {
     event.dataTransfer.dropEffect = 'move';
   };
 
-  const saveWorkflow = () => {
+  const saveWorkflow = async () => {
     const id = workflowId || uuidv4();
     const workflow = { id, nodes, edges };
+
+    // Save to local storage
     localStorage.setItem(`workflow_${id}`, JSON.stringify(workflow));
     setWorkflowId(id);
-    alert(`Workflow saved with ID: ${id}`);
+
+    // Send POST request to backend
+    try {
+      const response = await fetch('http://localhost:8000/api/workflows', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(workflow), // Send the entire workflow object
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Workflow saved successfully:', result);
+        Swal.fire('Success', `Workflow saved with ID: ${id}`, 'success');
+      } else {
+        const error = await response.json();
+        console.error('Error saving workflow:', error);
+        Swal.fire('Error', 'Error saving workflow', 'error');
+      }
+    } catch (error) {
+      console.error('Error saving workflow:', error);
+      Swal.fire('Error', 'Error saving workflow', 'error');
+    }
   };
 
   const loadWorkflow = (id) => {
@@ -97,7 +123,7 @@ const Flow = () => {
       setEdges(workflow.edges);
       setWorkflowId(id);
     } else {
-      alert(`No workflow found with ID: ${id}`);
+      Swal.fire('Not Found', `No workflow found with ID: ${id}`, 'warning');
     }
   };
 
