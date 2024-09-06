@@ -21,7 +21,7 @@ const UploadPage = () => {
     setFile(event.target.files[0]);
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!file) {
       alert('Please select a file to upload.');
       return;
@@ -33,29 +33,37 @@ const UploadPage = () => {
     }
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const data = e.target.result;
-      console.log('Uploaded data:', data);
 
       // Fetch the selected workflow
       const workflow = JSON.parse(localStorage.getItem(`workflow_${selectedWorkflowId}`));
-      if (workflow) {
+      
+
+      if (workflow && Array.isArray(workflow.nodes)) {
         const nodeTypes = workflow.nodes.map(node => node.type);
-        console.log('Node types in order:', nodeTypes);
+        console.log('Node types to be sent:', nodeTypes);
 
-        // Send the file data and node types to the server or process as needed
-        // Example:
-        // fetch('/api/upload', {
-        //   method: 'POST',
-        //   body: JSON.stringify({ data, nodeTypes }),
-        //   headers: { 'Content-Type': 'application/json' },
-        // }).then(response => response.json()).then(result => {
-        //   console.log('Server response:', result);
-        // });
+        // Send the file data and node types to the server
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('nodeTypes', JSON.stringify(nodeTypes));
+        formData.append('workflow', JSON.stringify(workflow));
 
-        alert('File and workflow data sent successfully.');
+        try {
+          const response = await fetch('http://localhost:8000/api/upload', {
+            method: 'POST',
+            body: formData,
+          });
+          const result = await response.json();
+          console.log('Server response:', result);
+          alert('File and node types sent successfully.');
+        } catch (error) {
+          console.error('Error uploading data:', error);
+          alert('Error uploading data.');
+        }
       } else {
-        alert('Workflow not found.');
+        alert('Workflow not found or invalid.');
       }
     };
     reader.readAsText(file);
