@@ -4,6 +4,7 @@ const UploadPage = () => {
   const [file, setFile] = useState(null);
   const [workflowIds, setWorkflowIds] = useState([]);
   const [selectedWorkflowId, setSelectedWorkflowId] = useState('');
+  const [progress, setProgress] = useState(''); // State for progress
 
   useEffect(() => {
     // Fetch workflow IDs from local storage
@@ -38,7 +39,6 @@ const UploadPage = () => {
 
       // Fetch the selected workflow
       const workflow = JSON.parse(localStorage.getItem(`workflow_${selectedWorkflowId}`));
-      
 
       if (workflow && Array.isArray(workflow.nodes)) {
         const nodeTypes = workflow.nodes.map(node => node.type);
@@ -51,14 +51,23 @@ const UploadPage = () => {
         formData.append('workflow', JSON.stringify(workflow));
 
         try {
+          setProgress('Uploading file...');
           const response = await fetch('http://localhost:8000/api/upload', {
             method: 'POST',
             body: formData,
           });
           const result = await response.json();
           console.log('Server response:', result);
-          alert('File and node types sent successfully.');
+
+          if (response.ok) {
+            setProgress('File uploaded successfully.');
+            alert(result.message);
+          } else {
+            setProgress('Error uploading file.');
+            alert(result.error);
+          }
         } catch (error) {
+          setProgress('Error uploading file.');
           console.error('Error uploading data:', error);
           alert('Error uploading data.');
         }
@@ -89,6 +98,7 @@ const UploadPage = () => {
         </select>
       </div>
       <button onClick={handleUpload}>Send</button>
+      {progress && <p>{progress}</p>} {/* Display progress */}
     </div>
   );
 };

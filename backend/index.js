@@ -6,17 +6,16 @@ const fs = require("fs");
 const csv = require("csvtojson");
 const { parse } = require("json2csv");
 const cors = require("cors");
-const PREDEFINED_URL = 'https://testing.requestcatcher.com/test'; // Replace with your RequestCatcher endpoint
+const PREDEFINED_URL = "https://vibhash.requestcatcher.com/test";
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
 
 app.use(bodyParser.json());
 
-// Configure CORS to allow requests from localhost:3000
 const corsOptions = {
   origin: "http://localhost:3000",
-  optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
+  optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
@@ -36,19 +35,21 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
   }
 
   try {
-    let data = fs.readFileSync(filePath, "utf8");
+    let data_org = fs.readFileSync(filePath, "utf8");
+    let data = data_org;
 
     for (const node of workflow.nodes) {
       switch (node.type) {
         case "filterData":
-          data = await filterData(data);
+          data = await filterData(data_org);
           console.log("Filtered data:", data);
           break;
         case "wait":
           await wait();
           break;
         case "convertFormat":
-          data = await convertFormat(data);
+          if (data === undefined) data = await convertFormat(data_org);
+          else data = await convertFormat(data);
           console.log("Converted data:", data);
           break;
         case "sendPostRequest":
@@ -91,18 +92,40 @@ const wait = () => {
 };
 
 const convertFormat = async (data) => {
-  const jsonArray = await csv().fromString(data);
+  const inputData = data;
+
+  // Check if the data is already in JSON format
+  try {
+    JSON.parse(inputData);
+    return inputData; // Return the data as is if it's already JSON
+  } catch (error) {}
+
+  // Convert CSV to JSON
+  const jsonArray = await csv().fromString(inputData);
 
   const jsonString = JSON.stringify(jsonArray);
+  console.log("Converted JSON string:", jsonString);
 
   return jsonString;
 };
 
 const sendPostRequest = async (data, url) => {
-  console.log('Sending POST request to:', url);
-  console.log('Payload:', data);
-  await axios.post(url, JSON.parse(data), {
-    headers: { 'Content-Type': 'application/json' }
+  console.log("Sending POST request to:", url);
+  console.log("Payload:", data);
+
+  // Ensure the data is a valid JSON string
+  let jsonData;
+  try {
+    jsonData = JSON.parse(data);
+  } catch (error) {
+    console.error("Invalid JSON data:", data);
+    throw new Error(
+      "Invalid JSON data. Make sure to convert Data to JSON before making Post Request"
+    );
+  }
+
+  await axios.post(url, jsonData, {
+    headers: { "Content-Type": "application/json" },
   });
 };
 
