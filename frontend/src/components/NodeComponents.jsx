@@ -2,21 +2,21 @@ import React from 'react';
 import { Handle } from 'reactflow';
 
 const FilterDataNode = ({ data }) => (
-  <div className="node">
+  <div className="node ">
     <Handle type="target" position="top" />
     <div>Filter Data </div>
     <Handle type="source" position="bottom" />
   </div>
 );
 const StartNode = ({ data }) => (
-  <div className="node">
+  <div className="node ">
     <Handle type="target" position="top" />
     <div>Start</div>
     <Handle type="source" position="bottom" />
   </div>
 );
 const EndNode = ({ data }) => (
-  <div className="node">
+  <div className="node ">
     <Handle type="target" position="top" />
     <div>End</div>
     <Handle type="source" position="bottom" />
@@ -32,7 +32,7 @@ const WaitNode = ({ data }) => (
 );
 
 const ConvertFormatNode = ({ data }) => (
-  <div className="node">
+  <div className="node ">
     <Handle type="target" position="top" />
     <div>Convert Format</div>
     <Handle type="source" position="bottom" />
@@ -40,7 +40,7 @@ const ConvertFormatNode = ({ data }) => (
 );
 
 const SendPostRequestNode = ({ data }) => (
-  <div className="node">
+  <div className="node ">
     <Handle type="target" position="top" />
     <div>Send POST Request </div>
     <Handle type="source" position="bottom" />

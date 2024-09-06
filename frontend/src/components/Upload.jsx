@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { io } from 'socket.io-client';
+import { ProgressBar } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const UploadPage = () => {
   const [file, setFile] = useState(null);
   const [workflowIds, setWorkflowIds] = useState([]);
   const [selectedWorkflowId, setSelectedWorkflowId] = useState('');
-  const [progress, setProgress] = useState(''); // State for progress
+  const [progress, setProgress] = useState(0); // State for progress
+  const [currentNode, setCurrentNode] = useState(''); // State for current node
+  const [totalNodes, setTotalNodes] = useState(0); // State for total nodes
 
   useEffect(() => {
     // Fetch workflow IDs from local storage
@@ -16,7 +21,28 @@ const UploadPage = () => {
       }
     }
     setWorkflowIds(ids);
-  }, []);
+
+    // Connect to WebSocket server
+    const socket = io('http://localhost:8000');
+
+    socket.on('connect', () => {
+      console.log('Connected to WebSocket server');
+    });
+
+    socket.on('message', (message) => {
+      const data = message;
+      if (data.status === 'started') {
+        setCurrentNode(`Executing node: ${data.node}`);
+      } else if (data.status === 'completed') {
+        setCurrentNode(`Completed node: ${data.node}`);
+        setProgress((prevProgress) => prevProgress + (100 / totalNodes));
+      }
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [totalNodes]);
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -41,8 +67,14 @@ const UploadPage = () => {
       const workflow = JSON.parse(localStorage.getItem(`workflow_${selectedWorkflowId}`));
 
       if (workflow && Array.isArray(workflow.nodes)) {
-        const nodeTypes = workflow.nodes.map(node => node.type);
+        const nodeTypes = workflow.nodes.map((node) => node.type);
         console.log('Node types to be sent:', nodeTypes);
+
+        // Filter out 'start' and 'end' nodes
+        const filteredNodeTypes = nodeTypes.filter(type => type !== 'start' && type !== 'end');
+
+        // Set total nodes for progress calculation
+        setTotalNodes(filteredNodeTypes.length);
 
         // Send the file data and node types to the server
         const formData = new FormData();
@@ -51,7 +83,7 @@ const UploadPage = () => {
         formData.append('workflow', JSON.stringify(workflow));
 
         try {
-          setProgress('Uploading file...');
+          setProgress(0); // Reset progress
           const response = await fetch('http://localhost:8000/api/upload', {
             method: 'POST',
             body: formData,
@@ -60,14 +92,11 @@ const UploadPage = () => {
           console.log('Server response:', result);
 
           if (response.ok) {
-            setProgress('File uploaded successfully.');
             alert(result.message);
           } else {
-            setProgress('Error uploading file.');
             alert(result.error);
           }
         } catch (error) {
-          setProgress('Error uploading file.');
           console.error('Error uploading data:', error);
           alert('Error uploading data.');
         }
@@ -98,7 +127,8 @@ const UploadPage = () => {
         </select>
       </div>
       <button onClick={handleUpload}>Send</button>
-      {progress && <p>{progress}</p>} {/* Display progress */}
+      <ProgressBar now={progress} label={`${Math.round(progress)}%`} />
+      {currentNode && <p>{currentNode}</p>} {/* Display current node */}
     </div>
   );
 };

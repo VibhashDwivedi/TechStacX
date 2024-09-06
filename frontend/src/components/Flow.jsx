@@ -12,6 +12,7 @@ import {
 import 'reactflow/dist/style.css';
 import { v4 as uuidv4 } from 'uuid';
 import Sidebar from './Sidebar'; // Adjust the import path as necessary
+import '../index.css';
 
 import {
   StartNode,
@@ -101,7 +102,7 @@ const Flow = () => {
   };
 
   return (
-    <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
+    <div className='flow-container'>
       <Sidebar />
       <div
         className="reactflow-wrapper"
