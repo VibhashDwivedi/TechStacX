@@ -57,5 +57,31 @@ I have also deployed Frontend. See Live Demo Here
 ---
 ## Screenshots
 
+- `Build Workflow`
+![](https://github.com/VibhashDwivedi/TechStacX/blob/main/screenshots/Screenshot%20(328).png?raw=true)
+
+- `Workflow build sucessfully`
+![](https://github.com/VibhashDwivedi/TechStacX/blob/main/screenshots/Screenshot%20(329).png?raw=true) 
+
+- `Select Workflow based on ID`
+![](https://github.com/VibhashDwivedi/TechStacX/blob/main/screenshots/Screenshot%20(331).png?raw=true)
+
+![](https://github.com/VibhashDwivedi/TechStacX/blob/main/screenshots/Screenshot%20(332).png?raw=true)
+
+- `Run Workflow`
+![](https://github.com/VibhashDwivedi/TechStacX/blob/main/screenshots/Screenshot%20(333).png?raw=true)
+
+![](https://github.com/VibhashDwivedi/TechStacX/blob/main/screenshots/Screenshot%20(334).png?raw=true)
+
+![](https://github.com/VibhashDwivedi/TechStacX/blob/main/screenshots/Screenshot%20(336).png?raw=true)
+![](https://github.com/VibhashDwivedi/TechStacX/blob/main/screenshots/Screenshot%20(337).png?raw=true)
+
+- `Workflow Success`
+![](https://github.com/VibhashDwivedi/TechStacX/blob/main/screenshots/Screenshot%20(338).png?raw=true)
+
+- `Result`
+![](https://github.com/VibhashDwivedi/TechStacX/blob/main/screenshots/Screenshot%20(340).png?raw=true)
+
+
 
 
