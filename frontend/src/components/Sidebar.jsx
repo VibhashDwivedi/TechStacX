@@ -1,10 +1,11 @@
 import React from 'react';
+import '../index.css';
 
 const Sidebar = () => {
   return (
-    <div className="sidebar">
+    <div className="sidebar row">
       <div
-        className="dndnode input element"
+        className="dndnode input element col-md-12 col-3 text-center" 
         onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'start')}
         draggable
       >
@@ -12,35 +13,35 @@ const Sidebar = () => {
       </div>
       
       <div
-        className="dndnode input element"
+        className="dndnode input element col-md-12 col-3 text-center"
         onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'filterData')}
         draggable
       >
         Filter Data
       </div>
       <div
-        className="dndnode element"
+        className="dndnode element col-md-12 col-3 text-center"
         onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'wait')}
         draggable
       >
         Wait
       </div>
       <div
-        className="dndnode element"
+        className="dndnode element col-md-12 col-3 text-center"
         onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'convertFormat')}
         draggable
       >
         Convert Format
       </div>
       <div
-        className="dndnode element"
+        className="dndnode element col-md-12 col-3 text-center"
         onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'sendPostRequest')}
         draggable
       >
         Send POST Request
       </div>
       <div
-        className="dndnode input element"
+        className="dndnode input element col-md-12 col-3 text-center"
         onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'end')}
         draggable
       >

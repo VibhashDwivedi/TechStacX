@@ -150,11 +150,15 @@ const Flow = () => {
   };
 
   return (
-    <div className="flow-container">
-      <h1 className="text-center">Workflow Builder</h1>
+    <div className="">
+    <h1 className="text-center">Workflow Builder</h1>
+      <div className="row d-flex vh-100">
+        <div className="col-md-3">
       <Sidebar />
+      </div>
+      <div className="col-md-6 " style={{minHeight:"70%"}}>
       <div
-        className="reactflow-wrapper"
+        className="reactflow-wrapper "
         style={{ width: "100%", height: "100%" }}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
@@ -172,6 +176,8 @@ const Flow = () => {
           <Background variant="dots" gap={12} size={1} />
         </ReactFlow>
       </div>
+      </div>
+      <div className="col-md-3">
       <div className="controls">
         <button className="btn btn-primary m-2" onClick={saveWorkflow}>Save Workflow</button>
         <input
@@ -197,6 +203,8 @@ const Flow = () => {
           ))}
         </select>
       </div>
+      </div>
+    </div>
     </div>
   );
 };

@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { ProgressBar } from 'react-bootstrap';
 import Swal from 'sweetalert2';
+import Dropzone from 'react-dropzone';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const UploadPage = () => {
   const [file, setFile] = useState(null);
+  const [fileName, setFileName] = useState(''); // State for file name
   const [workflowIds, setWorkflowIds] = useState([]);
   const [selectedWorkflowId, setSelectedWorkflowId] = useState('');
   const [progress, setProgress] = useState(0); // State for progress
@@ -49,7 +51,9 @@ const UploadPage = () => {
   }, [totalNodes]);
 
   const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile);
+    setFileName(selectedFile.name);
   };
 
   const handleUpload = async () => {
@@ -122,13 +126,27 @@ const UploadPage = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="container px-5">
       <h2>Upload Data</h2>
-      <input type="file" onChange={handleFileChange} />
-      <div>
+      <Dropzone onDrop={acceptedFiles => {
+        setFile(acceptedFiles[0]);
+        setFileName(acceptedFiles[0].name);
+      }}>
+        {({ getRootProps, getInputProps }) => (
+          <div {...getRootProps({ className: 'dropzone border border-4 border-black p-5 text-center' })}>
+            <input {...getInputProps()} />
+            <i className="fa-solid fa-3x fa-upload"></i>
+            <h3>Drag and Drop files here to Upload </h3>
+            <div className='btn btn-outline-dark p-2 mt-2 fs-4'>or Select a file to upload</div>
+            {fileName && <p className="mt-2">{fileName}</p>}
+          </div>
+        )}
+      </Dropzone>
+      <div className="form-group mt-3">
         <label htmlFor="workflow-select">Select Workflow ID:</label>
         <select
           id="workflow-select"
+          className="form-control"
           value={selectedWorkflowId}
           onChange={(e) => setSelectedWorkflowId(e.target.value)}
         >
@@ -140,9 +158,11 @@ const UploadPage = () => {
           ))}
         </select>
       </div>
-      <button onClick={handleUpload}>Send</button>
-      <ProgressBar now={progress}  />
-      {currentNode && <p>{currentNode}</p>} {/* Display current node */}
+      <button className="btn btn-primary mt-3" onClick={handleUpload}>Send</button>
+      <div className="mt-3">
+        <ProgressBar now={progress} />
+      </div>
+      {currentNode && <p className="mt-3">{currentNode}</p>} {/* Display current node */}
     </div>
   );
 };

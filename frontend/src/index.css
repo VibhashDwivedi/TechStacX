@@ -1,3 +1,6 @@
+*{
+  font-family: Montserrat;
+}
 
 .node {
   border: 1px solid #777;
@@ -22,52 +25,30 @@
   cursor: grabbing;
 }
 
-.flow-container {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
+
+
+.col-3{
+  margin-left: 10px;
 }
 
-.reactflow-wrapper {
-  width: 100%;
-  height: 100%;
+@media (max-width: 570px) {
+  .col-3 {
+    width: 100% !important;
+    /* transform: scale(0.9); */
+  }
 }
 
-.controls {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px;
-}
 
-@media (max-width: 768px) {
-  .flow-container {
-    flex-direction: column;
+@media screen and (max-width: 768px) {
+  .controls{
+    transform: scale(0.9);
   }
 
-  .sidebar {
+  .sidebar{
+    transform: scale(0.9);
+    font-size: small
    
-    height: 170px; /* Smaller height for sidebar in mobile view */
-    /* overflow: hidden; Hide overflow content */
-    transform: scale(0.8); /* Scale down the contents */
-    transform-origin: top left; /* Scale from the top left corner */
-    display: flex;
-    flex-wrap: wrap; 
   }
-
-  .sidebar .element {
-   justify-content: space-between;
-    box-sizing: border-box;
-    margin: 5px; 
-  }
-
-  .reactflow-wrapper {
-    height: 70vh;
-  }
-
-  .controls {
-    width: 50%;
-    padding: 10px;
-    transform: scale(0.8); /* Scale down the contents */
-  }
+ 
 }
+
