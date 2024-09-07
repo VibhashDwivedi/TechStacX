@@ -1,14 +1,8 @@
 const {model, Schema}= require('./connection');
 
 const myschema = new Schema({
-  id:{
-    type: String,
-    required: true,
-    unique: true
-  },
-  nodeTypes: {
-    type: [String], // Define an array of strings
-    required: true // You can set this to false if it's not mandatory
-  }
+  id: { type: String, required: true, unique: true },
+  nodes: { type: Array, required: true },
+  edges: { type: Array, required: true },
 });
-module.exports = model('Workflows', myschema);
+module.exports = model('Workflow', myschema);
