@@ -156,6 +156,7 @@ const Flow = () => {
         Swal.fire("Error", "Error saving workflow", "error");
       }
     } catch (error) {
+      console.log(BACKEND_URL)
       console.error("Error saving workflow:", error);
       Swal.fire("Error", "Error saving workflow", "error");
     }
