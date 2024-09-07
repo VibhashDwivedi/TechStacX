@@ -88,6 +88,14 @@ I have also deployed Frontend. See Live Demo Here
 
 ![](https://github.com/VibhashDwivedi/TechStacX/blob/main/screenshots/Screenshot%20(340).png?raw=true)
 
+- `Mobile View`
+
+![](https://github.com/VibhashDwivedi/TechStacX/blob/main/screenshots/Mobile%20View%201.jpg?raw=true)
+
+![](https://github.com/VibhashDwivedi/TechStacX/blob/main/screenshots/Mobile%20View%202.jpg?raw=true)
+
+![](https://github.com/VibhashDwivedi/TechStacX/blob/main/screenshots/Mobile%20View%203.jpg?raw=true)
+
 
 
 
