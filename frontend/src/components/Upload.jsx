@@ -127,7 +127,7 @@ const UploadPage = () => {
 
   return (
     <div className="container px-5">
-      <h2>Run Workflow</h2>
+      <h2 className='text-center'>Run Workflow</h2>
       <Dropzone onDrop={acceptedFiles => {
         setFile(acceptedFiles[0]);
         setFileName(acceptedFiles[0].name);
