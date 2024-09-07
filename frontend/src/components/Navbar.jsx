@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import React from 'react'
+import {  NavLink } from 'react-router-dom'
 
 
 const Navbar = () => {
@@ -9,8 +9,8 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
   <div className="container-fluid">
-    <NavLink className="navbar-brand" href="#">
-      Navbar
+    <NavLink className="navbar-brand fw-bold" href="#">
+     TechStackX
     </NavLink>
     <button
       className="navbar-toggler"
@@ -27,12 +27,12 @@ const Navbar = () => {
       <ul className="navbar-nav me-auto mb-2 mb-lg-0">
         <li className="nav-item">
           <NavLink className="nav-link"  to="/">
-            Home
+           Build
           </NavLink>
         </li>
         <li className="nav-item">
           <NavLink className="nav-link" to="/upload">
-            Upload
+           Run
           </NavLink>
         </li>
        
