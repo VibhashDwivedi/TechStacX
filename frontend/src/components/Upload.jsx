@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { io } from 'socket.io-client';
-import { ProgressBar } from 'react-bootstrap';
-import Swal from 'sweetalert2';
-import Dropzone from 'react-dropzone';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState, useEffect } from 'react'; // Import React and necessary hooks
+import { io } from 'socket.io-client'; // Import socket.io-client for WebSocket communication
+import { ProgressBar } from 'react-bootstrap'; // Import ProgressBar from react-bootstrap
+import Swal from 'sweetalert2'; // Import SweetAlert2 for alerts
+import Dropzone from 'react-dropzone'; // Import Dropzone for file uploads
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 
-const BACKEND_URL = 'http://localhost:8000';
+const BACKEND_URL = 'http://localhost:8000'; // Backend URL
 
 const UploadPage = () => {
-  const [file, setFile] = useState(null);
+  // State hooks
+  const [file, setFile] = useState(null); // State for selected file
   const [fileName, setFileName] = useState(''); // State for file name
-  const [workflowIds, setWorkflowIds] = useState([]);
-  const [selectedWorkflowId, setSelectedWorkflowId] = useState('');
+  const [workflowIds, setWorkflowIds] = useState([]); // State for workflow IDs
+  const [selectedWorkflowId, setSelectedWorkflowId] = useState(''); // State for selected workflow ID
   const [progress, setProgress] = useState(0); // State for progress
   const [currentNode, setCurrentNode] = useState(''); // State for current node
   const [totalNodes, setTotalNodes] = useState(0); // State for total nodes
@@ -37,6 +38,7 @@ const UploadPage = () => {
       console.log('Connected to WebSocket server');
     });
 
+    // Handle messages from WebSocket server
     socket.on('message', (message) => {
       const data = message;
       if (data.status === 'started') {
@@ -46,18 +48,19 @@ const UploadPage = () => {
         setProgress((prevProgress) => prevProgress + (100 / totalNodes));
       }
     });
-
     return () => {
       socket.disconnect();
     };
   }, [totalNodes]);
 
-  const handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
-    setFile(selectedFile);
-    setFileName(selectedFile.name);
-  };
+  // // Handle file change
+  // const handleFileChange = (event) => {
+  //   const selectedFile = event.target.files[0];
+  //   setFile(selectedFile);
+  //   setFileName(selectedFile.name);
+  // };
 
+  // Handle file upload
   const handleUpload = async () => {
     if (!file) {
       Swal.fire('Error', 'Please select a file to upload.', 'error');
@@ -138,7 +141,7 @@ const UploadPage = () => {
           <div {...getRootProps({ className: 'dropzone border border-4 border-black p-5 text-center' })}>
             <input {...getInputProps()} />
             <i className="fa-solid fa-3x fa-upload"></i>
-            <h3>Drag and Drop files here to Upload </h3>
+            <h3>Drag and Drop files here to Upload</h3>
             <div className='btn btn-outline-dark p-2 mt-2 fs-4'>or Select a file to upload</div>
             {fileName && <p className="mt-2">{fileName}</p>}
           </div>
@@ -169,4 +172,4 @@ const UploadPage = () => {
   );
 };
 
-export default UploadPage;
+export default UploadPage; // Export UploadPage component

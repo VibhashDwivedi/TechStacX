@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react"; // Import necessary React hooks
 import {
   ReactFlow,
   MiniMap,
@@ -8,13 +8,12 @@ import {
   useEdgesState,
   addEdge,
   useReactFlow,
-} from "reactflow";
-import "reactflow/dist/style.css";
-import { v4 as uuidv4 } from "uuid";
-import Swal from "sweetalert2";
-import Sidebar from "./Sidebar"; // Adjust the import path as necessary
-import "../index.css";
-
+} from "reactflow"; // Import components and hooks from reactflow library
+import "reactflow/dist/style.css"; // Import reactflow styles
+import { v4 as uuidv4 } from "uuid"; // Import uuid for generating unique IDs
+import Swal from "sweetalert2"; // Import SweetAlert2 for alerts
+import Sidebar from "./Sidebar"; // Import Sidebar component
+import "../index.css"; // Import custom styles
 import {
   StartNode,
   FilterDataNode,
@@ -22,13 +21,15 @@ import {
   ConvertFormatNode,
   SendPostRequestNode,
   EndNode,
-} from "./NodeComponents"; // Adjust the import path as necessary
+} from "./NodeComponents"; // Import custom node components
 
-const BACKEND_URL =  "http://localhost:8000";
+const BACKEND_URL = "http://localhost:8000"; // Update backend URL according to your backend server
 
+// Initial state for nodes and edges
 const initialNodes = [];
 const initialEdges = [];
 
+// Define custom node types
 const nodeTypes = {
   start: StartNode,
   filterData: FilterDataNode,
@@ -39,6 +40,7 @@ const nodeTypes = {
 };
 
 const Flow = () => {
+  // State hooks for nodes, edges, and workflow IDs
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const { project } = useReactFlow();
@@ -56,16 +58,17 @@ const Flow = () => {
       console.error("Error fetching workflows:", error);
     }
   };
-
   useEffect(() => {
     fetchWorkflows();
   }, []);
 
+  // Handle connection between nodes
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
 
+  // Add a new node to the workflow
   const addNode = (type, position) => {
     console.log(`Adding node of type ${type} at position`, position);
     const newNode = {
@@ -78,6 +81,7 @@ const Flow = () => {
     return newNode;
   };
 
+  // Handle drop event to add a new node
   const handleDrop = (event) => {
     event.preventDefault();
     const type = event.dataTransfer.getData("application/reactflow");
@@ -97,47 +101,55 @@ const Flow = () => {
     }
   };
 
+  // Handle drag over event
   const handleDragOver = (event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   };
 
+  // Handle touch start event for mobile devices
   const handleTouchStart = (event) => {
     event.preventDefault();
     const touch = event.touches[0];
     const dataTransfer = new DataTransfer();
-    dataTransfer.setData('application/reactflow', event.target.dataset.reactflow);
-    event.target.dispatchEvent(new DragEvent('dragstart', { dataTransfer }));
+    dataTransfer.setData(
+      "application/reactflow",
+      event.target.dataset.reactflow
+    );
+    event.target.dispatchEvent(new DragEvent("dragstart", { dataTransfer }));
   };
 
+  // Handle touch move event for mobile devices
   const handleTouchMove = (event) => {
     event.preventDefault();
     const touch = event.touches[0];
     const target = document.elementFromPoint(touch.clientX, touch.clientY);
     if (target) {
-      target.dispatchEvent(new DragEvent('dragover', { bubbles: true }));
+      target.dispatchEvent(new DragEvent("dragover", { bubbles: true }));
     }
   };
 
+  // Handle touch end event for mobile devices
   const handleTouchEnd = (event) => {
     event.preventDefault();
     const touch = event.changedTouches[0];
     const target = document.elementFromPoint(touch.clientX, touch.clientY);
     if (target) {
-      target.dispatchEvent(new DragEvent('drop', { bubbles: true }));
+      target.dispatchEvent(new DragEvent("drop", { bubbles: true }));
     }
   };
 
+  // Save the current workflow to the backend
   const saveWorkflow = async () => {
     // Check if nodes and edges are empty
     if (nodes.length === 0 || edges.length === 0) {
       Swal.fire("Error", "Nodes and edges cannot be empty", "error");
       return;
     }
-  
+
     const id = workflowId || uuidv4();
     const workflow = { id, nodes, edges };
-  
+
     // Send POST request to backend
     try {
       const response = await fetch(`${BACKEND_URL}/api/workflows`, {
@@ -147,7 +159,7 @@ const Flow = () => {
         },
         body: JSON.stringify(workflow), // Send the entire workflow object
       });
-  
+
       if (response.ok) {
         const result = await response.json();
         console.log("Workflow saved successfully:", result);
@@ -164,6 +176,8 @@ const Flow = () => {
       Swal.fire("Error", "Error saving workflow", "error");
     }
   };
+
+  // Load a workflow from the backend
   const loadWorkflow = async (id) => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/workflows/${id}`);
@@ -187,7 +201,7 @@ const Flow = () => {
       <h1 className="text-center">Workflow Builder</h1>
       <div className="row d-flex vh-100">
         <div className="col-md-3">
-        <h3 className="text-center">WorkFlow Nodes</h3>
+          <h3 className="text-center">WorkFlow Nodes</h3>
           <Sidebar />
         </div>
         <div className="col-md-6" style={{ minHeight: "70%" }}>
@@ -216,7 +230,9 @@ const Flow = () => {
         </div>
         <div className="col-md-3">
           <div className="controls">
-            <button className="btn btn-primary m-2" onClick={saveWorkflow}>Save Workflow</button>
+            <button className="btn btn-primary m-2" onClick={saveWorkflow}>
+              Save Workflow
+            </button>
             <input
               type="text"
               className="form-control w-75 m-2"
