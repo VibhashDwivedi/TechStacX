@@ -13,6 +13,7 @@ const Sidebar = () => {
         className="dndnode input"
         onDragStart={(event) => onDragStart(event, 'start')}
         draggable
+        data-reactflow="start"
       >
         Start Node
       </div>
@@ -20,6 +21,7 @@ const Sidebar = () => {
         className="dndnode"
         onDragStart={(event) => onDragStart(event, 'filterData')}
         draggable
+        data-reactflow="filterData"
       >
         Filter Data Node
       </div>
@@ -27,6 +29,7 @@ const Sidebar = () => {
         className="dndnode"
         onDragStart={(event) => onDragStart(event, 'wait')}
         draggable
+        data-reactflow="wait"
       >
         Wait Node
       </div>
@@ -34,6 +37,7 @@ const Sidebar = () => {
         className="dndnode"
         onDragStart={(event) => onDragStart(event, 'convertFormat')}
         draggable
+        data-reactflow="convertFormat"
       >
         Convert Format Node
       </div>
@@ -41,6 +45,7 @@ const Sidebar = () => {
         className="dndnode"
         onDragStart={(event) => onDragStart(event, 'sendPostRequest')}
         draggable
+        data-reactflow="sendPostRequest"
       >
         Send Post Request Node
       </div>
@@ -48,6 +53,7 @@ const Sidebar = () => {
         className="dndnode output"
         onDragStart={(event) => onDragStart(event, 'end')}
         draggable
+        data-reactflow="end"
       >
         End Node
       </div>

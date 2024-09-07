@@ -101,11 +101,13 @@ const Flow = () => {
   };
 
   const handleTouchStart = (event) => {
-    event.preventDefault();
     const touch = event.touches[0];
-    const dataTransfer = new DataTransfer();
-    dataTransfer.setData('application/reactflow', event.target.dataset.reactflow);
-    event.target.dispatchEvent(new DragEvent('dragstart', { dataTransfer }));
+    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (target && target.dataset.reactflow) {
+      const dataTransfer = new DataTransfer();
+      dataTransfer.setData('application/reactflow', target.dataset.reactflow);
+      event.target.dispatchEvent(new DragEvent('dragstart', { dataTransfer }));
+    }
   };
 
   const handleTouchMove = (event) => {
