@@ -1,84 +1,53 @@
 import React from 'react';
+import '../index.css';
 
 const Sidebar = () => {
-  const onDragStart = (event, nodeType) => {
-    event.dataTransfer.setData('application/reactflow', nodeType);
-    event.dataTransfer.effectAllowed = 'move';
-  };
-
-  const onTouchStart = (event, nodeType) => {
-    const touch = event.touches[0];
-    const target = document.elementFromPoint(touch.clientX, touch.clientY);
-    if (target) {
-      const dataTransfer = new DataTransfer();
-      dataTransfer.setData('application/reactflow', nodeType);
-      const dragEvent = new DragEvent('dragstart', {
-        bubbles: true,
-        cancelable: true,
-        dataTransfer,
-      });
-      target.dispatchEvent(dragEvent);
-    }
-  };
-
   return (
-    <aside>
-      <div className="description">You can drag these nodes to the pane on the right.</div>
+    <div className="sidebar row">
       <div
-        className="dndnode input"
-        onDragStart={(event) => onDragStart(event, 'start')}
-        onTouchStart={(event) => onTouchStart(event, 'start')}
+        className="dndnode input element col-md-12 col-3 text-center" 
+        onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'start')}
         draggable
-        data-reactflow="start"
       >
-        Start Node
+        Start
+      </div>
+      
+      <div
+        className="dndnode input element col-md-12 col-3 text-center"
+        onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'filterData')}
+        draggable
+      >
+        Filter Data
       </div>
       <div
-        className="dndnode"
-        onDragStart={(event) => onDragStart(event, 'filterData')}
-        onTouchStart={(event) => onTouchStart(event, 'filterData')}
+        className="dndnode element col-md-12 col-3 text-center"
+        onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'wait')}
         draggable
-        data-reactflow="filterData"
       >
-        Filter Data Node
+        Wait
       </div>
       <div
-        className="dndnode"
-        onDragStart={(event) => onDragStart(event, 'wait')}
-        onTouchStart={(event) => onTouchStart(event, 'wait')}
+        className="dndnode element col-md-12 col-3 text-center"
+        onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'convertFormat')}
         draggable
-        data-reactflow="wait"
       >
-        Wait Node
+        Convert Format
       </div>
       <div
-        className="dndnode"
-        onDragStart={(event) => onDragStart(event, 'convertFormat')}
-        onTouchStart={(event) => onTouchStart(event, 'convertFormat')}
+        className="dndnode element col-md-12 col-3 text-center"
+        onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'sendPostRequest')}
         draggable
-        data-reactflow="convertFormat"
       >
-        Convert Format Node
+        Send POST Request
       </div>
       <div
-        className="dndnode"
-        onDragStart={(event) => onDragStart(event, 'sendPostRequest')}
-        onTouchStart={(event) => onTouchStart(event, 'sendPostRequest')}
+        className="dndnode input element col-md-12 col-3 text-center"
+        onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'end')}
         draggable
-        data-reactflow="sendPostRequest"
       >
-        Send Post Request Node
+       End
       </div>
-      <div
-        className="dndnode output"
-        onDragStart={(event) => onDragStart(event, 'end')}
-        onTouchStart={(event) => onTouchStart(event, 'end')}
-        draggable
-        data-reactflow="end"
-      >
-        End Node
-      </div>
-    </aside>
+    </div>
   );
 };
 
