@@ -24,6 +24,8 @@ import {
   EndNode,
 } from "./NodeComponents"; // Adjust the import path as necessary
 
+const BACKEND_URL =  "http://localhost:8000";
+
 const initialNodes = [];
 const initialEdges = [];
 
@@ -47,7 +49,7 @@ const Flow = () => {
   // Fetch workflow IDs from backend
   const fetchWorkflows = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/workflows");
+      const response = await fetch(`${BACKEND_URL}/api/workflows`);
       const data = await response.json();
       setWorkflowIds(data.map((workflow) => workflow.id));
     } catch (error) {
@@ -132,7 +134,7 @@ const Flow = () => {
 
     // Send POST request to backend
     try {
-      const response = await fetch("http://localhost:8000/api/workflows", {
+      const response = await fetch(`${BACKEND_URL}/api/workflows`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -159,7 +161,7 @@ const Flow = () => {
 
   const loadWorkflow = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/workflows/${id}`);
+      const response = await fetch(`${BACKEND_URL}/api/workflows/${id}`);
       if (response.ok) {
         const workflow = await response.json();
         setNodes(workflow.nodes);
