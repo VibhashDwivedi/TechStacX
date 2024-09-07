@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const multer = require("multer");
@@ -8,7 +9,7 @@ const { parse } = require("json2csv");
 const cors = require("cors");
 const { Server } = require("socket.io");
 const http = require("http");
-const PREDEFINED_URL = "https://vibhash.requestcatcher.com/test";
+const PREDEFINED_URL = process.env.PREDEFINED_URL;
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -16,7 +17,7 @@ const upload = multer({ dest: "uploads/" });
 app.use(bodyParser.json());
 
 const corsOptions = {
-  origin: "https://tech-stac-x.vercel.app" || "http://localhost:3000",
+  origin: process.env.FRONTEND_URL,
   optionsSuccessStatus: 200,
 };
 
@@ -25,7 +26,7 @@ app.use(cors(corsOptions));
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://tech-stac-x.vercel.app" || "http://localhost:3000",
+    origin: process.env.FRONTEND_URL,
     methods: ["GET", "POST"],
   },
 });
