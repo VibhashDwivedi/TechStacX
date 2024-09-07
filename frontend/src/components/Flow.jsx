@@ -25,6 +25,7 @@ import {
 } from "./NodeComponents"; // Adjust the import path as necessary
 
 const BACKEND_URL =  process.env.REACT_APP_BACKEND_URL;
+console.log(BACKEND_URL);
 const initialNodes = [];
 const initialEdges = [];
 
@@ -48,6 +49,7 @@ const Flow = () => {
   // Fetch workflow IDs from backend
   const fetchWorkflows = async () => {
     try {
+      console.log(BACKEND_URL)
       const response = await fetch(`${BACKEND_URL}/api/workflows`);
       const data = await response.json();
       setWorkflowIds(data.map((workflow) => workflow.id));
@@ -133,6 +135,7 @@ const Flow = () => {
 
     // Send POST request to backend
     try {
+      console.log(BACKEND_URL)
       const response = await fetch(`${BACKEND_URL}/api/workflows`, {
         method: "POST",
         headers: {
