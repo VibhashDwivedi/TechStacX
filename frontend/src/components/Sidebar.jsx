@@ -1,53 +1,57 @@
 import React from 'react';
-import '../index.css';
 
 const Sidebar = () => {
+  const onDragStart = (event, nodeType) => {
+    event.dataTransfer.setData('application/reactflow', nodeType);
+    event.dataTransfer.effectAllowed = 'move';
+  };
+
   return (
-    <div className="sidebar row">
+    <aside>
+      <div className="description">You can drag these nodes to the pane on the right.</div>
       <div
-        className="dndnode input element col-md-12 col-3 text-center" 
-        onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'start')}
+        className="dndnode input"
+        onDragStart={(event) => onDragStart(event, 'start')}
         draggable
       >
-        Start
-      </div>
-      
-      <div
-        className="dndnode input element col-md-12 col-3 text-center"
-        onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'filterData')}
-        draggable
-      >
-        Filter Data
+        Start Node
       </div>
       <div
-        className="dndnode element col-md-12 col-3 text-center"
-        onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'wait')}
+        className="dndnode"
+        onDragStart={(event) => onDragStart(event, 'filterData')}
         draggable
       >
-        Wait
+        Filter Data Node
       </div>
       <div
-        className="dndnode element col-md-12 col-3 text-center"
-        onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'convertFormat')}
+        className="dndnode"
+        onDragStart={(event) => onDragStart(event, 'wait')}
         draggable
       >
-        Convert Format
+        Wait Node
       </div>
       <div
-        className="dndnode element col-md-12 col-3 text-center"
-        onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'sendPostRequest')}
+        className="dndnode"
+        onDragStart={(event) => onDragStart(event, 'convertFormat')}
         draggable
       >
-        Send POST Request
+        Convert Format Node
       </div>
       <div
-        className="dndnode input element col-md-12 col-3 text-center"
-        onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'end')}
+        className="dndnode"
+        onDragStart={(event) => onDragStart(event, 'sendPostRequest')}
         draggable
       >
-       End
+        Send Post Request Node
       </div>
-    </div>
+      <div
+        className="dndnode output"
+        onDragStart={(event) => onDragStart(event, 'end')}
+        draggable
+      >
+        End Node
+      </div>
+    </aside>
   );
 };
 
