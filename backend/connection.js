@@ -1,5 +1,6 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
-const url ='mongodb+srv://vibhashdwivedi96:techstackx@cluster0.kunnu.mongodb.net/TechStackX?retryWrites=true&w=majority&appName=Cluster0'
+const url = process.env.MONGODB_URI ;
 
 //asynchronous function - returns a promise
 mongoose.connect(url)
