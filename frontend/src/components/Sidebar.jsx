@@ -4,6 +4,7 @@ import '../index.css';
 const Sidebar = () => {
   return (
     <div className="sidebar row">
+      <h2 className="text-center border border-1">WorkFlow Nodes</h2>
       <div
         className="dndnode input element col-md-12 col-3 text-center" 
         onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'start')}
