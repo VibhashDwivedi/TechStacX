@@ -12,7 +12,11 @@ const Sidebar = () => {
     if (target) {
       const dataTransfer = new DataTransfer();
       dataTransfer.setData('application/reactflow', nodeType);
-      const dragEvent = new DragEvent('dragstart', { dataTransfer });
+      const dragEvent = new DragEvent('dragstart', {
+        bubbles: true,
+        cancelable: true,
+        dataTransfer,
+      });
       target.dispatchEvent(dragEvent);
     }
   };
