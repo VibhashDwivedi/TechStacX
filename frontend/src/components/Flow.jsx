@@ -14,6 +14,9 @@ import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar"; // Adjust the import path as necessary
 import "../index.css";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 import {
   StartNode,
