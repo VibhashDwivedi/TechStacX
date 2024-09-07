@@ -100,6 +100,32 @@ const Flow = () => {
     event.dataTransfer.dropEffect = "move";
   };
 
+  const handleTouchStart = (event) => {
+    event.preventDefault();
+    const touch = event.touches[0];
+    const dataTransfer = new DataTransfer();
+    dataTransfer.setData('application/reactflow', event.target.dataset.reactflow);
+    event.target.dispatchEvent(new DragEvent('dragstart', { dataTransfer }));
+  };
+
+  const handleTouchMove = (event) => {
+    event.preventDefault();
+    const touch = event.touches[0];
+    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (target) {
+      target.dispatchEvent(new DragEvent('dragover', { bubbles: true }));
+    }
+  };
+
+  const handleTouchEnd = (event) => {
+    event.preventDefault();
+    const touch = event.changedTouches[0];
+    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (target) {
+      target.dispatchEvent(new DragEvent('drop', { bubbles: true }));
+    }
+  };
+
   const saveWorkflow = async () => {
     const id = workflowId || uuidv4();
     const workflow = { id, nodes, edges };
@@ -151,60 +177,63 @@ const Flow = () => {
 
   return (
     <div className="">
-    <h1 className="text-center">Workflow Builder</h1>
+      <h1 className="text-center">Workflow Builder</h1>
       <div className="row d-flex vh-100">
         <div className="col-md-3">
-      <Sidebar />
+          <Sidebar />
+        </div>
+        <div className="col-md-6" style={{ minHeight: "70%" }}>
+          <div
+            className="reactflow-wrapper"
+            style={{ width: "100%", height: "100%" }}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              nodeTypes={nodeTypes}
+            >
+              <Controls />
+              <MiniMap />
+              <Background variant="dots" gap={12} size={1} />
+            </ReactFlow>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="controls">
+            <button className="btn btn-primary m-2" onClick={saveWorkflow}>Save Workflow</button>
+            <input
+              type="text"
+              className="form-control w-75 m-2"
+              placeholder="Enter Workflow ID"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  loadWorkflow(e.target.value);
+                }
+              }}
+            />
+            <select
+              value={workflowId}
+              className="form-control w-75 m-2"
+              onChange={(e) => loadWorkflow(e.target.value)}
+            >
+              <option value="">--Select Workflow--</option>
+              {workflowIds.map((id) => (
+                <option key={id} value={id}>
+                  {id}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       </div>
-      <div className="col-md-6 " style={{minHeight:"70%"}}>
-      <div
-        className="reactflow-wrapper "
-        style={{ width: "100%", height: "100%" }}
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-      >
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          nodeTypes={nodeTypes}
-        >
-          <Controls />
-          <MiniMap />
-          <Background variant="dots" gap={12} size={1} />
-        </ReactFlow>
-      </div>
-      </div>
-      <div className="col-md-3">
-      <div className="controls">
-        <button className="btn btn-primary m-2" onClick={saveWorkflow}>Save Workflow</button>
-        <input
-          type="text"
-          className="form-control w-75 m-2"
-          placeholder="Enter Workflow ID"
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              loadWorkflow(e.target.value);
-            }
-          }}
-        />
-        <select
-          value={workflowId}
-          className="form-control w-75 m-2"
-          onChange={(e) => loadWorkflow(e.target.value)}
-        >
-          <option value="">--Select Workflow--</option>
-          {workflowIds.map((id) => (
-            <option key={id} value={id}>
-              {id}
-            </option>
-          ))}
-        </select>
-      </div>
-      </div>
-    </div>
     </div>
   );
 };
