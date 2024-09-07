@@ -129,9 +129,15 @@ const Flow = () => {
   };
 
   const saveWorkflow = async () => {
+    // Check if nodes and edges are empty
+    if (nodes.length === 0 || edges.length === 0) {
+      Swal.fire("Error", "Nodes and edges cannot be empty", "error");
+      return;
+    }
+  
     const id = workflowId || uuidv4();
     const workflow = { id, nodes, edges };
-
+  
     // Send POST request to backend
     try {
       const response = await fetch(`${BACKEND_URL}/api/workflows`, {
@@ -141,7 +147,7 @@ const Flow = () => {
         },
         body: JSON.stringify(workflow), // Send the entire workflow object
       });
-
+  
       if (response.ok) {
         const result = await response.json();
         console.log("Workflow saved successfully:", result);
@@ -158,7 +164,6 @@ const Flow = () => {
       Swal.fire("Error", "Error saving workflow", "error");
     }
   };
-
   const loadWorkflow = async (id) => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/workflows/${id}`);
