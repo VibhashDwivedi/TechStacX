@@ -101,18 +101,11 @@ const Flow = () => {
   };
 
   const handleTouchStart = (event) => {
+    event.preventDefault();
     const touch = event.touches[0];
-    const target = document.elementFromPoint(touch.clientX, touch.clientY);
-    if (target && target.dataset.reactflow) {
-      const dataTransfer = new DataTransfer();
-      dataTransfer.setData('application/reactflow', target.dataset.reactflow);
-      const dragEvent = new DragEvent('dragstart', {
-        bubbles: true,
-        cancelable: true,
-        dataTransfer,
-      });
-      target.dispatchEvent(dragEvent);
-    }
+    const dataTransfer = new DataTransfer();
+    dataTransfer.setData('application/reactflow', event.target.dataset.reactflow);
+    event.target.dispatchEvent(new DragEvent('dragstart', { dataTransfer }));
   };
 
   const handleTouchMove = (event) => {
@@ -120,8 +113,7 @@ const Flow = () => {
     const touch = event.touches[0];
     const target = document.elementFromPoint(touch.clientX, touch.clientY);
     if (target) {
-      const dragEvent = new DragEvent('dragover', { bubbles: true });
-      target.dispatchEvent(dragEvent);
+      target.dispatchEvent(new DragEvent('dragover', { bubbles: true }));
     }
   };
 
@@ -130,8 +122,7 @@ const Flow = () => {
     const touch = event.changedTouches[0];
     const target = document.elementFromPoint(touch.clientX, touch.clientY);
     if (target) {
-      const dragEvent = new DragEvent('drop', { bubbles: true });
-      target.dispatchEvent(dragEvent);
+      target.dispatchEvent(new DragEvent('drop', { bubbles: true }));
     }
   };
 
