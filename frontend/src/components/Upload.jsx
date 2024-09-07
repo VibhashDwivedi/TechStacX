@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import Dropzone from 'react-dropzone';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
 
 const UploadPage = () => {
   const [file, setFile] = useState(null);
@@ -20,7 +20,7 @@ const UploadPage = () => {
     // Fetch workflow IDs from backend
     const fetchWorkflows = async () => {
       try {
-        const response = await fetch(`${BACKEND_URL}/api/workflows`);
+        const response = await fetch('http://localhost:8000/api/workflows');
         const data = await response.json();
         setWorkflowIds(data.map(workflow => workflow.id));
       } catch (error) {
@@ -31,7 +31,7 @@ const UploadPage = () => {
     fetchWorkflows();
 
     // Connect to WebSocket server
-    const socket = io(BACKEND_URL);
+    const socket = io('http://localhost:8000');
 
     socket.on('connect', () => {
       console.log('Connected to WebSocket server');
@@ -75,7 +75,7 @@ const UploadPage = () => {
 
       // Fetch the selected workflow from the backend
       try {
-        const response = await fetch(`${BACKEND_URL}/api/workflows/${selectedWorkflowId}`);
+        const response = await fetch(`http://localhost:8000/api/workflows/${selectedWorkflowId}`);
         if (response.ok) {
           const workflow = await response.json();
 
@@ -97,7 +97,7 @@ const UploadPage = () => {
 
             try {
               setProgress(0); // Reset progress
-              const response = await fetch(`${BACKEND_URL}/api/upload`, {
+              const response = await fetch('http://localhost:8000/api/upload', {
                 method: 'POST',
                 body: formData,
               });

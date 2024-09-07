@@ -14,9 +14,6 @@ import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar"; // Adjust the import path as necessary
 import "../index.css";
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 import {
   StartNode,
@@ -27,8 +24,6 @@ import {
   EndNode,
 } from "./NodeComponents"; // Adjust the import path as necessary
 
-const BACKEND_URL =  process.env.REACT_APP_BACKEND_URL;
-console.log(BACKEND_URL);
 const initialNodes = [];
 const initialEdges = [];
 
@@ -52,8 +47,7 @@ const Flow = () => {
   // Fetch workflow IDs from backend
   const fetchWorkflows = async () => {
     try {
-      console.log(BACKEND_URL)
-      const response = await fetch(`${BACKEND_URL}/api/workflows`);
+      const response = await fetch("http://localhost:8000/api/workflows");
       const data = await response.json();
       setWorkflowIds(data.map((workflow) => workflow.id));
     } catch (error) {
@@ -138,8 +132,7 @@ const Flow = () => {
 
     // Send POST request to backend
     try {
-      console.log(BACKEND_URL)
-      const response = await fetch(`${BACKEND_URL}/api/workflows`, {
+      const response = await fetch("http://localhost:8000/api/workflows", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -159,7 +152,6 @@ const Flow = () => {
         Swal.fire("Error", "Error saving workflow", "error");
       }
     } catch (error) {
-      console.log(BACKEND_URL)
       console.error("Error saving workflow:", error);
       Swal.fire("Error", "Error saving workflow", "error");
     }
@@ -167,7 +159,7 @@ const Flow = () => {
 
   const loadWorkflow = async (id) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/workflows/${id}`);
+      const response = await fetch(`http://localhost:8000/api/workflows/${id}`);
       if (response.ok) {
         const workflow = await response.json();
         setNodes(workflow.nodes);
