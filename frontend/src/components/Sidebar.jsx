@@ -4,7 +4,7 @@ import '../index.css';
 const Sidebar = () => {
   return (
     <div className="sidebar row">
-      <h3 className="col-md-12 col-3 text-center">WorkFlow Nodes</h3>
+      <h3 className="col-md-12 col-3 text-center border border-1 ">WorkFlow Nodes</h3>
      
       <div
         className="dndnode input element col-md-12 col-3 text-center" 
