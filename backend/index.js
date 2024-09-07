@@ -16,7 +16,7 @@ const upload = multer({ dest: "uploads/" });
 app.use(bodyParser.json());
 
 const corsOptions = {
-  origin: "http://localhost:3000" || "https://tech-stac-x.vercel.app/",
+  origin: "https://tech-stac-x.vercel.app" || "http://localhost:3000",
   optionsSuccessStatus: 200,
 };
 
@@ -25,7 +25,7 @@ app.use(cors(corsOptions));
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://tech-stac-x.vercel.app/" || "http://localhost:3000",
+    origin: "https://tech-stac-x.vercel.app" || "http://localhost:3000",
     methods: ["GET", "POST"],
   },
 });
