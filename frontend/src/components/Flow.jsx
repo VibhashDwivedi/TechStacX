@@ -106,7 +106,11 @@ const Flow = () => {
     if (target && target.dataset.reactflow) {
       const dataTransfer = new DataTransfer();
       dataTransfer.setData('application/reactflow', target.dataset.reactflow);
-      const dragEvent = new DragEvent('dragstart', { dataTransfer });
+      const dragEvent = new DragEvent('dragstart', {
+        bubbles: true,
+        cancelable: true,
+        dataTransfer,
+      });
       target.dispatchEvent(dragEvent);
     }
   };
