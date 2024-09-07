@@ -13,15 +13,18 @@ const UploadPage = () => {
   const [totalNodes, setTotalNodes] = useState(0); // State for total nodes
 
   useEffect(() => {
-    // Fetch workflow IDs from local storage
-    const ids = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key.startsWith('workflow_')) {
-        ids.push(key.replace('workflow_', ''));
+    // Fetch workflow IDs from backend
+    const fetchWorkflows = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/workflows');
+        const data = await response.json();
+        setWorkflowIds(data.map(workflow => workflow.id));
+      } catch (error) {
+        console.error('Error fetching workflows:', error);
       }
-    }
-    setWorkflowIds(ids);
+    };
+
+    fetchWorkflows();
 
     // Connect to WebSocket server
     const socket = io('http://localhost:8000');
@@ -64,45 +67,55 @@ const UploadPage = () => {
     reader.onload = async (e) => {
       const data = e.target.result;
 
-      // Fetch the selected workflow
-      const workflow = JSON.parse(localStorage.getItem(`workflow_${selectedWorkflowId}`));
+      // Fetch the selected workflow from the backend
+      try {
+        const response = await fetch(`http://localhost:8000/api/workflows/${selectedWorkflowId}`);
+        if (response.ok) {
+          const workflow = await response.json();
 
-      if (workflow && Array.isArray(workflow.nodes)) {
-        const nodeTypes = workflow.nodes.map((node) => node.type);
-        console.log('Node types to be sent:', nodeTypes);
+          if (workflow && Array.isArray(workflow.nodes)) {
+            const nodeTypes = workflow.nodes.map((node) => node.type);
+            console.log('Node types to be sent:', nodeTypes);
 
-        // Filter out 'start' and 'end' nodes
-        const filteredNodeTypes = nodeTypes.filter(type => type !== 'start' && type !== 'end');
+            // Filter out 'start' and 'end' nodes
+            const filteredNodeTypes = nodeTypes.filter(type => type !== 'start' && type !== 'end');
 
-        // Set total nodes for progress calculation
-        setTotalNodes(filteredNodeTypes.length);
+            // Set total nodes for progress calculation
+            setTotalNodes(filteredNodeTypes.length);
 
-        // Send the file data and node types to the server
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('nodeTypes', JSON.stringify(nodeTypes));
-        formData.append('workflow', JSON.stringify(workflow));
+            // Send the file data and node types to the server
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('nodeTypes', JSON.stringify(nodeTypes));
+            formData.append('workflow', JSON.stringify(workflow));
 
-        try {
-          setProgress(0); // Reset progress
-          const response = await fetch('http://localhost:8000/api/upload', {
-            method: 'POST',
-            body: formData,
-          });
-          const result = await response.json();
-          console.log('Server response:', result);
+            try {
+              setProgress(0); // Reset progress
+              const response = await fetch('http://localhost:8000/api/upload', {
+                method: 'POST',
+                body: formData,
+              });
+              const result = await response.json();
+              console.log('Server response:', result);
 
-          if (response.ok) {
-            Swal.fire('Success', result.message, 'success');
+              if (response.ok) {
+                Swal.fire('Success', result.message, 'success');
+              } else {
+                Swal.fire('Error', result.error, 'error');
+              }
+            } catch (error) {
+              console.error('Error uploading data:', error);
+              Swal.fire('Error', 'Error uploading data.', 'error');
+            }
           } else {
-            Swal.fire('Error', result.error, 'error');
+            Swal.fire('Error', 'Workflow not found or invalid.', 'error');
           }
-        } catch (error) {
-          console.error('Error uploading data:', error);
-          Swal.fire('Error', 'Error uploading data.', 'error');
+        } else {
+          Swal.fire('Error', 'Failed to fetch workflow from backend.', 'error');
         }
-      } else {
-        Swal.fire('Error', 'Workflow not found or invalid.', 'error');
+      } catch (error) {
+        console.error('Error fetching workflow:', error);
+        Swal.fire('Error', 'An error occurred while fetching the workflow.', 'error');
       }
     };
     reader.readAsText(file);
@@ -128,7 +141,7 @@ const UploadPage = () => {
         </select>
       </div>
       <button onClick={handleUpload}>Send</button>
-      <ProgressBar now={progress} label={`${Math.round(progress)}%`} />
+      <ProgressBar now={progress}  />
       {currentNode && <p>{currentNode}</p>} {/* Display current node */}
     </div>
   );

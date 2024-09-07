@@ -58,12 +58,27 @@ app.post("/api/workflows", async (req, res) => {
   }
 });
 
+app.get('/api/workflows', async (req, res) => {
+  try {
+    const workflows = await Model.find({});
+    res.json(workflows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get("/api/workflows/:id", async (req, res) => {
   const { id } = req.params;
-  const workflow = await Model.findOne({ id }).catch((error) => {
-    console.error("Error fetching workflow:", error);
-  });
-  res.json(workflow);
+  try {
+    const workflow = await Model.findOne({ id });
+    if (workflow) {
+      res.json(workflow);
+    } else {
+      res.status(404).json({ error: "Workflow not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.post("/api/upload", upload.single("file"), async (req, res) => {

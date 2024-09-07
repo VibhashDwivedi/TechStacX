@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from "react";
 import {
   ReactFlow,
   MiniMap,
@@ -8,12 +8,12 @@ import {
   useEdgesState,
   addEdge,
   useReactFlow,
-} from 'reactflow';
-import 'reactflow/dist/style.css';
-import { v4 as uuidv4 } from 'uuid';
-import Swal from 'sweetalert2';
-import Sidebar from './Sidebar'; // Adjust the import path as necessary
-import '../index.css';
+} from "reactflow";
+import "reactflow/dist/style.css";
+import { v4 as uuidv4 } from "uuid";
+import Swal from "sweetalert2";
+import Sidebar from "./Sidebar"; // Adjust the import path as necessary
+import "../index.css";
 
 import {
   StartNode,
@@ -22,7 +22,7 @@ import {
   ConvertFormatNode,
   SendPostRequestNode,
   EndNode,
-} from './NodeComponents'; // Adjust the import path as necessary
+} from "./NodeComponents"; // Adjust the import path as necessary
 
 const initialNodes = [];
 const initialEdges = [];
@@ -41,10 +41,27 @@ const Flow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const { project } = useReactFlow();
   const [workflowId, setWorkflowId] = useState(null);
+  const [workflowIds, setWorkflowIds] = useState([]);
+  const [workflowLoaded, setWorkflowLoaded] = useState(false); // State to trigger re-render
+
+  // Fetch workflow IDs from backend
+  const fetchWorkflows = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/api/workflows");
+      const data = await response.json();
+      setWorkflowIds(data.map((workflow) => workflow.id));
+    } catch (error) {
+      console.error("Error fetching workflows:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchWorkflows();
+  }, []);
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges],
+    [setEdges]
   );
 
   const addNode = (type, position) => {
@@ -61,7 +78,7 @@ const Flow = () => {
 
   const handleDrop = (event) => {
     event.preventDefault();
-    const type = event.dataTransfer.getData('application/reactflow');
+    const type = event.dataTransfer.getData("application/reactflow");
     const position = project({ x: event.clientX, y: event.clientY });
     console.log(`Dropped node of type ${type} at position`, position);
     const newNode = addNode(type, position);
@@ -80,59 +97,65 @@ const Flow = () => {
 
   const handleDragOver = (event) => {
     event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
+    event.dataTransfer.dropEffect = "move";
   };
 
   const saveWorkflow = async () => {
     const id = workflowId || uuidv4();
     const workflow = { id, nodes, edges };
 
-    // Save to local storage
-    localStorage.setItem(`workflow_${id}`, JSON.stringify(workflow));
-    setWorkflowId(id);
-
     // Send POST request to backend
     try {
-      const response = await fetch('http://localhost:8000/api/workflows', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8000/api/workflows", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(workflow), // Send the entire workflow object
       });
 
       if (response.ok) {
         const result = await response.json();
-        console.log('Workflow saved successfully:', result);
-        Swal.fire('Success', `Workflow saved with ID: ${id}`, 'success');
+        console.log("Workflow saved successfully:", result);
+        Swal.fire("Success", `Workflow saved with ID: ${id}`, "success");
+        // Fetch updated list of workflows
+        fetchWorkflows();
       } else {
         const error = await response.json();
-        console.error('Error saving workflow:', error);
-        Swal.fire('Error', 'Error saving workflow', 'error');
+        console.error("Error saving workflow:", error);
+        Swal.fire("Error", "Error saving workflow", "error");
       }
     } catch (error) {
-      console.error('Error saving workflow:', error);
-      Swal.fire('Error', 'Error saving workflow', 'error');
+      console.error("Error saving workflow:", error);
+      Swal.fire("Error", "Error saving workflow", "error");
     }
   };
 
-  const loadWorkflow = (id) => {
-    const workflow = JSON.parse(localStorage.getItem(`workflow_${id}`));
-    if (workflow) {
-      setNodes(workflow.nodes);
-      setEdges(workflow.edges);
-      setWorkflowId(id);
-    } else {
-      Swal.fire('Not Found', `No workflow found with ID: ${id}`, 'warning');
+  const loadWorkflow = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/workflows/${id}`);
+      if (response.ok) {
+        const workflow = await response.json();
+        setNodes(workflow.nodes);
+        setEdges(workflow.edges);
+        setWorkflowId(id);
+        setWorkflowLoaded(true); // Trigger re-render
+      } else {
+        Swal.fire("Not Found", `No workflow found with ID: ${id}`, "warning");
+      }
+    } catch (error) {
+      console.error("Error loading workflow:", error);
+      Swal.fire("Error", "Error loading workflow", "error");
     }
   };
 
   return (
-    <div className='flow-container'>
+    <div className="flow-container">
+      <h1 className="text-center">Workflow Builder</h1>
       <Sidebar />
       <div
         className="reactflow-wrapper"
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: "100%", height: "100%" }}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
       >
@@ -150,12 +173,29 @@ const Flow = () => {
         </ReactFlow>
       </div>
       <div className="controls">
-        <button onClick={saveWorkflow}>Save Workflow</button>
+        <button className="btn btn-primary m-2" onClick={saveWorkflow}>Save Workflow</button>
         <input
           type="text"
+          className="form-control w-75 m-2"
           placeholder="Enter Workflow ID"
-          onBlur={(e) => loadWorkflow(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              loadWorkflow(e.target.value);
+            }
+          }}
         />
+        <select
+          value={workflowId}
+          className="form-control w-75 m-2"
+          onChange={(e) => loadWorkflow(e.target.value)}
+        >
+          <option value="">--Select Workflow--</option>
+          {workflowIds.map((id) => (
+            <option key={id} value={id}>
+              {id}
+            </option>
+          ))}
+        </select>
       </div>
     </div>
   );
