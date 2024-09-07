@@ -21,8 +21,7 @@ To get started, clone the repository and navigate to the project directory:
     ```
 3.  **Create a .env file in the root directory of the project and add the following values:**
      ```sh
-     MONGODB_URI=mongodb+srv://vibhashdwivedi96:techstackx@cluster0.kunnu.mongodb.net/TechStackX?retryWrites=true&w=majority&appName=Cluster0
-     *Use Your own MongoDB Driver Link*
+     MONGODB_URI=mongodb+srv://vibhashdwivedi96:techstackx@cluster0.kunnu.mongodb.net/TechStackX?retryWrites=true&w=majority&appName=Cluster0 
      PREDEFINED_URL= Your Mock Url
      FRONTEND_URL=Your Frontend url
      ```
@@ -52,7 +51,7 @@ The server will run successfully on localhost `8000`.
 The server will run successfully on localhost 3000.
 
 I have also deployed Frontend. See Live Demo Here
- [](https://tech-stac-x.vercel.app)
+ [`https://tech-stac-x.vercel.app`](https://tech-stac-x.vercel.app)
 
 ---
 ## Screenshots
