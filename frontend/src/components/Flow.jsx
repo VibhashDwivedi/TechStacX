@@ -180,6 +180,7 @@ const Flow = () => {
       <h1 className="text-center">Workflow Builder</h1>
       <div className="row d-flex vh-100">
         <div className="col-md-3">
+        <h3 className="text-center">WorkFlow Nodes</h3>
           <Sidebar />
         </div>
         <div className="col-md-6" style={{ minHeight: "70%" }}>
