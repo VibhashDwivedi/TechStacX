@@ -1,29 +1,30 @@
-require('dotenv').config();
-const express = require("express");
-const bodyParser = require("body-parser");
-const multer = require("multer");
-const axios = require("axios");
-const fs = require("fs");
-const csv = require("csvtojson");
-const { parse } = require("json2csv");
-const cors = require("cors");
-const { Server } = require("socket.io");
-const http = require("http");
-const PREDEFINED_URL = process.env.PREDEFINED_URL;
+require('dotenv').config(); // Load environment variables from .env file
+const express = require("express"); // Import Express framework
+const bodyParser = require("body-parser"); // Import body-parser for parsing request bodies
+const multer = require("multer"); // Import multer for handling file uploads
+const axios = require("axios"); // Import axios for making HTTP requests
+const fs = require("fs"); // Import file system module
+const csv = require("csvtojson"); // Import csvtojson for converting CSV to JSON
+const { parse } = require("json2csv"); // Import json2csv for converting JSON to CSV
+const cors = require("cors"); // Import cors for enabling Cross-Origin Resource Sharing
+const { Server } = require("socket.io"); // Import socket.io for WebSocket communication
+const http = require("http"); // Import HTTP module
+const PREDEFINED_URL = process.env.PREDEFINED_URL; // Load predefined URL from environment variables
 
-const app = express();
-const upload = multer({ dest: "uploads/" });
+const app = express(); // Create an Express application
+const upload = multer({ dest: "uploads/" }); // Configure multer to save uploaded files to "uploads/" directory
 
-app.use(bodyParser.json());
+app.use(bodyParser.json()); // Use body-parser middleware to parse JSON request bodies
 
+// Configure CORS options
 const corsOptions = {
   origin: process.env.FRONTEND_URL,
   optionsSuccessStatus: 200,
 };
 
-app.use(cors(corsOptions));
+app.use(cors(corsOptions)); // Use CORS middleware with the specified options
 
-const server = http.createServer(app);
+const server = http.createServer(app); // Create an HTTP server
 const io = new Server(server, {
   cors: {
     origin: process.env.FRONTEND_URL,
@@ -31,18 +32,19 @@ const io = new Server(server, {
   },
 });
 
+// Handle WebSocket connections
 io.on("connection", (socket) => {
   console.log("Client connected");
 });
 
+// Broadcast a message to all connected clients
 const broadcast = (message) => {
   io.emit("message", message);
 };
 
-const Model = require("./model");
+const Model = require("./model"); // Import the Workflow model
 
-
-
+// Endpoint to save a workflow to the database
 app.post("/api/workflows", async (req, res) => {
   const { id, nodes, edges } = req.body;
 
@@ -59,6 +61,7 @@ app.post("/api/workflows", async (req, res) => {
   }
 });
 
+// Endpoint to get all workflows from the database
 app.get('/api/workflows', async (req, res) => {
   try {
     const workflows = await Model.find({});
@@ -68,6 +71,7 @@ app.get('/api/workflows', async (req, res) => {
   }
 });
 
+// Endpoint to get a specific workflow by ID
 app.get("/api/workflows/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -82,6 +86,7 @@ app.get("/api/workflows/:id", async (req, res) => {
   }
 });
 
+// Endpoint to upload a file and execute a workflow
 app.post("/api/upload", upload.single("file"), async (req, res) => {
   const nodeTypes = JSON.parse(req.body.nodeTypes);
   const workflow = JSON.parse(req.body.workflow);
@@ -139,6 +144,7 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
   }
 });
 
+// Function to filter data
 const filterData = async (data) => {
   const jsonArray = await csv().fromString(data);
   const filteredData = jsonArray.map((row) => {
@@ -152,6 +158,7 @@ const filterData = async (data) => {
   return csvString;
 };
 
+// Function to wait for a specified duration
 const wait = () => {
   console.log("Wait started");
   return new Promise((resolve) =>
@@ -162,6 +169,7 @@ const wait = () => {
   );
 };
 
+// Function to convert data format
 const convertFormat = async (data_org, data = null) => {
   // Use data_org if data is null or undefined
   const inputData = data || data_org;
@@ -186,6 +194,7 @@ const convertFormat = async (data_org, data = null) => {
   return jsonString;
 };
 
+// Function to send a POST request
 const sendPostRequest = async (data, url) => {
   console.log("Sending request to:", url);
   console.log("Payload:", data);
@@ -206,6 +215,7 @@ const sendPostRequest = async (data, url) => {
   });
 };
 
+// Start the server
 server.listen(8000, () => {
   console.log("Server is running on port 8000");
 });
