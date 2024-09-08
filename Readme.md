@@ -25,6 +25,7 @@ To get started, clone the repository and navigate to the project directory:
      PREDEFINED_URL= Your Mock Url
      FRONTEND_URL=Your Frontend url
      ```
+     - *Use Your own MongoDB URI*
 4. **Start the server**
     ```sh
     npm run dev
