@@ -20,7 +20,7 @@ To get started, clone the repository and navigate to the project directory:
     npm install
     ```
 3.  **Create a .env file in the root directory of the project and add the following values:**
-4.    - *Use Your own MongoDB URI*
+    - *Use Your own MongoDB URI*
         
      ```sh
      MONGODB_URI=mongodb+srv://vibhashdwivedi96:techstackx@cluster0.kunnu.mongodb.net/TechStackX?retryWrites=true&w=majority&appName=Cluster0 
