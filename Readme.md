@@ -19,7 +19,7 @@ To get started, clone the repository and navigate to the project directory:
     ```sh
     npm install
     ```
-3.  **Create a .env file in the root directory of the project and add the following values:**
+3.  **Create a .env file in the backend and add the following values:**
     - *Use Your own MongoDB URI*
         
      ```sh
