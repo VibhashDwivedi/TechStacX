@@ -51,7 +51,7 @@ The server will run successfully on localhost `8000`.
     ```sh
     npm start
     ```
-The server will run successfully on localhost 3000.
+The server will run successfully on localhost `3000`.
 
 I have also deployed Frontend. See Live Demo Here
  [`https://tech-stac-x.vercel.app`](https://tech-stac-x.vercel.app)
